@@ -7,6 +7,7 @@ import Register from "./pages/register";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import Dashboard from "./pages/dashboard";
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
@@ -23,7 +24,7 @@ function AppRoutes() {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <h1>Dashboard</h1>
+            <Dashboard/>
           </PrivateRoute>
         }
       />
