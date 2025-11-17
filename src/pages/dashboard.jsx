@@ -7,7 +7,7 @@ export default function Dashboard() {
   const { logout } = useAuth();
   const [tasks, setTasks] = useState([]);
 
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -50,7 +50,7 @@ export default function Dashboard() {
       }
 
       setFormData({ title: "", description: "", deadline: "", status_id: 1 });
-      setShowForm(false); 
+      setShowForm(false);
       fetchTasks();
     } catch (err) {
       toast.error(isEditing ? "Failed to update" : "Failed to add task");
@@ -72,14 +72,14 @@ export default function Dashboard() {
       status_id: task.status_id,
     });
 
-    setShowForm(true); 
+    setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditId(null);
-    setShowForm(false); 
+    setShowForm(false);
     setFormData({ title: "", description: "", deadline: "", status_id: 1 });
   };
 
@@ -103,6 +103,10 @@ export default function Dashboard() {
       toast.error("Error deleting task");
     }
   };
+
+  // ---- NEW: Split tasks ----
+  const pendingTasks = tasks.filter((t) => !t.completed_at);
+  const completedTasks = tasks.filter((t) => t.completed_at);
 
   return (
     <div className="dashboard">
@@ -174,47 +178,87 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="task-list">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            className={`task-card ${task.completed_at ? "completed" : ""}`}
-          >
-            <div>
-              <h3>{task.title}</h3>
-              <p>{task.description}</p>
-              <small>
-                Deadline: {new Date(task.deadline).toLocaleDateString()}
-              </small>
-            </div>
+      {/* ---- NEW TWO-COLUMN LAYOUT ---- */}
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "20px",
+          marginTop: "20px",
+        }}
+      >
+        {/* Pending Tasks */}
+        <div>
+          <h2>Pending Tasks</h2>
+          {pendingTasks.length === 0 && <p>No pending tasks</p>}
 
-            <div className="actions">
-              {!task.completed_at && (
-                <>
-                  <button
-                    onClick={() => handleEditClick(task)}
-                    style={{ background: "#ffc107", color: "#000" }}
-                  >
-                    ✎ Edit
-                  </button>
-                  <button
-                    onClick={() => handleComplete(task.id)}
-                    className="done-btn"
-                  >
-                    ✓ Done
-                  </button>
-                </>
-              )}
+          {pendingTasks.map((task) => (
+            <div key={task.id} className="task-card">
+              <div>
+                <h3>{task.title}</h3>
+                <p>{task.description}</p>
+                <small>
+                  Deadline: {new Date(task.deadline).toLocaleDateString()}
+                </small>
+              </div>
 
-              <button
-                onClick={() => handleDelete(task.id)}
-                className="delete-btn"
-              >
-                ✕ Delete
-              </button>
+              <div className="actions">
+                <button
+                  onClick={() => handleEditClick(task)}
+                  style={{ background: "#ffc107", color: "#000" }}
+                >
+                  ✎ Edit
+                </button>
+
+                <button
+                  onClick={() => handleComplete(task.id)}
+                  className="done-btn"
+                >
+                  ✓ Done
+                </button>
+
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  className="delete-btn"
+                >
+                  ✕ Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Completed Tasks */}
+        <div>
+          <h2>Completed Tasks</h2>
+          {completedTasks.length === 0 && <p>No completed tasks</p>}
+
+          {completedTasks.map((task) => (
+            <div
+              key={task.id}
+              className="task-card completed"
+              style={{ opacity: 0.8 }}
+            >
+              <div>
+                <h3>{task.title}</h3>
+                <p>{task.description}</p>
+                <small>
+                  Completed on:{" "}
+                  {new Date(task.completed_at).toLocaleDateString()}
+                </small>
+              </div>
+
+              <div className="actions">
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  className="delete-btn"
+                >
+                  ✕ Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
