@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import { useAuth } from "../context/auth-context";
 import { toast } from "react-toastify";
+import TaskCard from "../components/taskcard"; 
 
 export default function Dashboard() {
   const { logout } = useAuth();
@@ -104,7 +105,6 @@ export default function Dashboard() {
     }
   };
 
-  // ---- NEW: Split tasks ----
   const pendingTasks = tasks.filter((t) => !t.completed_at);
   const completedTasks = tasks.filter((t) => t.completed_at);
 
@@ -178,7 +178,6 @@ export default function Dashboard() {
         </section>
       )}
 
-      {/* ---- NEW TWO-COLUMN LAYOUT ---- */}
       <section
         style={{
           display: "grid",
@@ -187,76 +186,33 @@ export default function Dashboard() {
           marginTop: "20px",
         }}
       >
-        {/* Pending Tasks */}
         <div>
           <h2>Pending Tasks</h2>
           {pendingTasks.length === 0 && <p>No pending tasks</p>}
 
           {pendingTasks.map((task) => (
-            <div key={task.id} className="task-card">
-              <div>
-                <h3>{task.title}</h3>
-                <p>{task.description}</p>
-                <small>
-                  Deadline: {new Date(task.deadline).toLocaleDateString()}
-                </small>
-              </div>
-
-              <div className="actions">
-                <button
-                  onClick={() => handleEditClick(task)}
-                  style={{ background: "#ffc107", color: "#000" }}
-                >
-                  ✎ Edit
-                </button>
-
-                <button
-                  onClick={() => handleComplete(task.id)}
-                  className="done-btn"
-                >
-                  ✓ Done
-                </button>
-
-                <button
-                  onClick={() => handleDelete(task.id)}
-                  className="delete-btn"
-                >
-                  ✕ Delete
-                </button>
-              </div>
-            </div>
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEdit={handleEditClick}
+              onComplete={handleComplete}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
 
-        {/* Completed Tasks */}
         <div>
           <h2>Completed Tasks</h2>
           {completedTasks.length === 0 && <p>No completed tasks</p>}
 
           {completedTasks.map((task) => (
-            <div
+            <TaskCard
               key={task.id}
-              className="task-card completed"
-              style={{ opacity: 0.8 }}
-            >
-              <div>
-                <h3>{task.title}</h3>
-                <p>{task.description}</p>
-                <small>
-                  Completed on:{" "}
-                  {new Date(task.completed_at).toLocaleDateString()}
-                </small>
-              </div>
-
-              <div className="actions">
-                <button
-                  onClick={() => handleDelete(task.id)}
-                  className="delete-btn"
-                >
-                  ✕ Delete
-                </button>
-              </div>
-            </div>
+              task={task}
+              onEdit={handleEditClick}
+              onComplete={handleComplete}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       </section>

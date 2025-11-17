@@ -5,13 +5,23 @@ export default function TaskCard({ task, onEdit, onComplete, onDelete }) {
     ? new Date(task.deadline).toLocaleDateString()
     : null;
 
+  const formattedCompletedDate = task.completed_at
+    ? new Date(task.completed_at).toLocaleDateString()
+    : null;
+
   return (
     <div className={`task-card ${task.completed_at ? "completed" : ""}`}>
       <div className="task-content">
         <h3>{task.title}</h3>
         <p>{task.description}</p>
 
-        {formattedDeadline && <small>Deadline: {formattedDeadline}</small>}
+        {formattedCompletedDate ? (
+          <small style={{ color: "green" }}>
+            Completed on: {formattedCompletedDate}
+          </small>
+        ) : (
+          formattedDeadline && <small>Deadline: {formattedDeadline}</small>
+        )}
       </div>
 
       <div className="task-actions">
@@ -21,19 +31,13 @@ export default function TaskCard({ task, onEdit, onComplete, onDelete }) {
               ✎ Edit
             </button>
 
-            <button
-              onClick={() => onComplete(task.id)}
-              className="btn-done"
-            >
+            <button onClick={() => onComplete(task.id)} className="btn-done">
               ✓ Done
             </button>
           </>
         )}
 
-        <button
-          onClick={() => onDelete(task.id)}
-          className="btn-delete"
-        >
+        <button onClick={() => onDelete(task.id)} className="btn-delete">
           ✕ Delete
         </button>
       </div>
