@@ -10,8 +10,15 @@ import "./App.css";
 import Dashboard from "./pages/dashboard";
 
 const PrivateRoute = ({ children }) => {
-  const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  const { isAuthenticated, loading } = useAuth(); 
+  
+  if (loading) {
+    return <div style={{padding: '50px', textAlign: 'center'}}>Loading application...</div>;
+  }
+  if (isAuthenticated) {
+    return children;
+  }
+  return <Navigate to="/login" />;
 };
 
 function AppRoutes() {
