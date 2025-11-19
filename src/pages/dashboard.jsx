@@ -25,14 +25,20 @@ export default function Dashboard() {
       const res = await api.get("/api/tasks");
       setTasks(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Task fetch failed:", err);
+      if (err.response && err.response.status === 401) {
+          toast.error("Session expired. Please log in again.");
+          logout(); 
+      } else {
+          toast.error("Failed to load tasks.");
+      }
     }
   };
 
   useEffect(() => {
     fetchTasks();
   }, []);
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -62,21 +68,26 @@ export default function Dashboard() {
     setIsEditing(true);
     setEditId(task.id);
 
-    const formattedDate = task.deadline
-      ? new Date(task.deadline).toISOString().split("T")[0]
-      : "";
+    let formattedDeadline = "";
+    if (task.deadline) {
+      const date = new Date(task.deadline);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); 
+      const day = String(date.getDate()).padStart(2, '0'); 
+      formattedDeadline = `${year}-${month}-${day}`;
+    }
 
     setFormData({
       title: task.title,
       description: task.description,
-      deadline: formattedDate,
+      
+      deadline: formattedDeadline, 
       status_id: task.status_id,
     });
 
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditId(null);
@@ -111,7 +122,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <header>
-        <h1>Task Manager</h1>
+        <h1>Task Tracker</h1>
         <button onClick={logout} className="logout-btn">
           Logout
         </button>
