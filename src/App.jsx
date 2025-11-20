@@ -7,23 +7,50 @@ import Register from "./pages/register";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import Dashboard from "./pages/dashboard";
 
 const PrivateRoute = ({ children }) => {
-  const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  const { isAuthenticated, loading } = useAuth(); 
+  
+  if (loading) {
+    return <div style={{padding: '50px', textAlign: 'center'}}>Loading application...</div>;
+  }
+  if (isAuthenticated) {
+    return children;
+  }
+  return <Navigate to="/login" />;
+};
+
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
 };
 
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }/>
+      <Route path="/register" element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        } />
 
       <Route
         path="/dashboard"
         element={
           <PrivateRoute>
-            <h1>Dashboard</h1>
+            <Dashboard/>
           </PrivateRoute>
         }
       />
