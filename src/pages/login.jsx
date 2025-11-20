@@ -9,9 +9,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = formData.email.trim().toLowerCase();
+    const { email, password } = formData;
+    const payload = { email, password };
+
     try {
-      await login(email, formData.password);
+      await login(payload);
       toast.success("Welcome back!");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
@@ -27,7 +29,7 @@ export default function Login() {
           type="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value.trim().toLowerCase() })}
           required
         />
         <input

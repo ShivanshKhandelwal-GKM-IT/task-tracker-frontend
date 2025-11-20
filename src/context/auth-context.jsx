@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const isAuthenticated = !!user;
+
   useEffect(() => {
     const checkUserLoggedIn = async () => {
       try {
@@ -25,14 +26,14 @@ export const AuthProvider = ({ children }) => {
     checkUserLoggedIn();
   }, []); 
 
-  const login = async (email, password) => {
-    const res = await api.post("/api/auth/login", { email, password });
+  const login = async (payload) => {
+    const res = await api.post("/api/auth/login", payload);
     setUser(res.data.user);
     navigate("/dashboard"); 
   };
 
-  const register = async (name, email, password) => {
-    await api.post("/api/auth/register", { name, email, password });
+  const register = async (payload) => {
+    await api.post("/api/auth/register", payload);
     navigate("/login"); 
   };
   
