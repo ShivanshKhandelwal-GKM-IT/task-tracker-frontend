@@ -9,8 +9,9 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const email = formData.email.trim().toLowerCase();
     try {
-      await login(formData.email, formData.password);
+      await login(email, formData.password);
       toast.success("Welcome back!");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");

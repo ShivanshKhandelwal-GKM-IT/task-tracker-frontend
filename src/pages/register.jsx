@@ -8,14 +8,29 @@ export default function Register() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
+  e.preventDefault();
+
+  const name = formData.name.trim();
+  const email = formData.email.trim().toLowerCase();
+  const password = formData.password.trim();
+
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    return toast.error("Invalid email format");
+  }
+
+  if (password.length < 6) {
+    return toast.error("Password must be at least 6 characters");
+  }
+
+  try {
       await register(formData.name, formData.email, formData.password);
       toast.success("Account created!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed");
-    }
-  };
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Registration failed");
+  }
+};
+
 
   return (
     <div className="auth-container">
