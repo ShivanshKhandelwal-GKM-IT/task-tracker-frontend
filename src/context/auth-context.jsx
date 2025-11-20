@@ -6,18 +6,27 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
   const isAuthenticated = !!user;
-
   useEffect(() => {
-    setLoading(false);
+    const checkUserLoggedIn = async () => {
+      try {
+        const res = await api.get("/api/auth/me"); 
+        setUser(res.data.user); 
+      } catch (error) {
+        setUser(null); 
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    checkUserLoggedIn();
   }, []); 
 
   const login = async (email, password) => {
     const res = await api.post("/api/auth/login", { email, password });
-
     setUser(res.data.user);
     navigate("/dashboard"); 
   };

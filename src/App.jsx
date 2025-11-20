@@ -21,11 +21,30 @@ const PrivateRoute = ({ children }) => {
   return <Navigate to="/login" />;
 };
 
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }/>
+      <Route path="/register" element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        } />
 
       <Route
         path="/dashboard"
