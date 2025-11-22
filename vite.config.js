@@ -9,7 +9,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Task Tracker App', // Change this to your app's name
+        name: 'Task Tracker App', 
         short_name: 'TaskTracker',
         description: 'My awesome Task Tracker App',
         theme_color: '#ffffff',
@@ -28,4 +28,8 @@ export default defineConfig({
       }
     })
   ],
+  test: {
+    environment: 'jsdom', 
+    globals: true, 
+  },
 })
