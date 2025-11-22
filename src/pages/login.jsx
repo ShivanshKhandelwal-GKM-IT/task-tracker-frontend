@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/auth-context";
+import validator from "validator";
 
 export default function Login() {
   const { login } = useAuth();
@@ -10,6 +11,10 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
+
+    if (!validator.isEmail(email)) {
+        return toast.error("Invalid email format");
+    }
     const payload = { email, password };
 
     try {

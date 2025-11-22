@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/auth-context";
+import validator from "validator";
 
 export default function Register() {
   const { register } = useAuth();
@@ -12,8 +13,7 @@ export default function Register() {
 
     const { name, email, password } = formData;
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
+    if (!validator.isEmail(email)) {
       return toast.error("Invalid email format");
     }
 
