@@ -6,8 +6,8 @@ import '@testing-library/jest-dom';
 
 describe("TaskCard Component", () => {
   const mockHandlers = { onEdit: vi.fn(), onComplete: vi.fn(), onDelete: vi.fn() };
-  const pendingTask = { id: 1, title: "T1", description: "D1", deadline: "2024-01-01", completed_at: null };
-  const completedTask = { id: 2, title: "T2", description: "D2", deadline: "2024-01-01", completed_at: "2024-01-02" };
+  const pendingTask = { id: 1, title: "T1", description: "D1", deadline: "2026-01-01", completed_at: null };
+  const completedTask = { id: 2, title: "T2", description: "D2", deadline: "2026-01-01", completed_at: "2026-01-02" };
 
   test("renders pending task actions", () => {
     render(<TaskCard task={pendingTask} {...mockHandlers} />);
